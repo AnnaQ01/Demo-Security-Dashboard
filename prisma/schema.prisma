@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model der_capability {
+  capability_id             String           @id @db.VarChar(10)
+  der_id                    String?          @db.VarChar(10)
+  max_ac_current            Decimal?         @db.Decimal(6, 2)
+  max_usable_energy_storage Decimal?         @db.Decimal(6, 2)
+  minpf_overexcited_limit   Decimal?         @db.Decimal(6, 2)
+  minpf_underexcited_limit  Decimal?         @db.Decimal(6, 2)
+  max_apparent_power        Decimal?         @db.Decimal(6, 2)
+  max_reactive_power_tx     Decimal?         @db.Decimal(6, 2)
+  max_reactive_power_rx     Decimal?         @db.Decimal(6, 2)
+  max_active_power_tx       Decimal?         @db.Decimal(6, 2)
+  max_energy_storage        Decimal?         @db.Decimal(6, 2)
+  min_ac_voltage            Decimal?         @db.Decimal(6, 2)
+  max_ac_voltage            Decimal?         @db.Decimal(6, 2)
+  der_information           der_information? @relation(fields: [der_id], references: [der_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model der_information {
+  der_id                       String              @id @db.VarChar(10)
+  der_name                     String?             @db.VarChar(50)
+  der_type                     String?             @db.VarChar(50)
+  manufacturer_id              String?             @db.VarChar(50)
+  manufacturer_serial_number   String?             @db.VarChar(50)
+  manufacture_date             DateTime?           @db.Timestamp(6)
+  manufacturer_info            String?             @db.VarChar(50)
+  manufacture_model_number     String?             @db.VarChar(50)
+  manufacture_hw_version       String?             @db.VarChar(50)
+  latest_sw_version            String?             @db.VarChar(10)
+  latest_sw_release_date       DateTime?           @db.Timestamp(6)
+  latest_firmware_version      String?             @db.VarChar(10)
+  latest_firmware_release_date DateTime?           @db.Timestamp(6)
+  location                     String?             @db.VarChar(50)
+  der_capability               der_capability[]
+  der_control                  der_control[]
+  der_networkstatus            der_networkstatus[]
+  der_setting                  der_setting[]
+}
+
+model der_networkstatus {
+  netstat_id      String           @id @db.VarChar(10)
+  der_id          String?          @db.VarChar(10)
+  ip_address      String?          @db.VarChar(15)
+  mac_address     String?          @db.VarChar(17)
+  network_name    String?          @db.VarChar(255)
+  port_number     Int?
+  connection_type String?          @db.VarChar(50)
+  der_information der_information? @relation(fields: [der_id], references: [der_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model der_setting {
+  setting_id                    String           @id @db.VarChar(10)
+  der_id                        String?          @db.VarChar(10)
+  set_max_ac_current            Decimal?         @db.Decimal(6, 2)
+  set_max_usable_energy_storage Decimal?         @db.Decimal(6, 2)
+  set_minpf_overexcited_limit   Decimal?         @db.Decimal(6, 2)
+  set_minpf_underexcited_limit  Decimal?         @db.Decimal(6, 2)
+  set_max_apparent_power        Decimal?         @db.Decimal(6, 2)
+  set_max_reactive_power_tx     Decimal?         @db.Decimal(6, 2)
+  set_max_reactive_power_rx     Decimal?         @db.Decimal(6, 2)
+  set_max_active_power_tx       Decimal?         @db.Decimal(6, 2)
+  set_max_energy_storage        Decimal?         @db.Decimal(6, 2)
+  set_min_ac_voltage            Decimal?         @db.Decimal(6, 2)
+  set_max_ac_voltage            Decimal?         @db.Decimal(6, 2)
+  current_sw_version            String?          @db.VarChar(10)
+  sw_last_update_date           DateTime?        @db.Timestamp(6)
+  current_firmware_version      String?          @db.VarChar(10)
+  firmware_last_update_date     DateTime?        @db.Timestamp(6)
+  der_information               der_information? @relation(fields: [der_id], references: [der_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model der_control {
+  control_id                    String           @id @db.VarChar(10)
+  der_id                        String?          @db.VarChar(10)
+  max_active_power              Decimal?         @db.Decimal(6, 2)
+  min_active_power              Decimal?         @db.Decimal(6, 2)
+  max_reactive_power            Decimal?         @db.Decimal(6, 2)
+  min_reactive_power            Decimal?         @db.Decimal(6, 2)
+  max_apparent_power            Decimal?         @db.Decimal(6, 2)
+  min_apparent_power            Decimal?         @db.Decimal(6, 2)
+  set_max_pf_overexcited_limit  Decimal?         @db.Decimal(6, 2)
+  set_min_pf_overexcited_limit  Decimal?         @db.Decimal(6, 2)
+  set_max_pf_underexcited_limit Decimal?         @db.Decimal(6, 2)
+  set_min_pf_underexcited_limit Decimal?         @db.Decimal(6, 2)
+  der_information               der_information? @relation(fields: [der_id], references: [der_id], onDelete: NoAction, onUpdate: NoAction)
+}
